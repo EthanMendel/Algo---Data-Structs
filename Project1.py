@@ -37,7 +37,37 @@ def mergeSort(arr):
                 j = j + 1
                 k = k + 1
 
+def swapBiggest(arr, n, i):
+    biggest = i
+    l = i * 2 + 1
+    r = i * 2 + 2
+    #check if left is bigger than root
+    if l < n and arr[biggest] < arr[l]:
+        biggest = l
+    #check if right is bigger than root
+    if r < n and arr[biggest] < arr[r]:
+        biggest = r
+    #change the root if needed
+    if biggest != i:
+        hold = arr[i]
+        arr[i] = arr[biggest]
+        arr[biggest] = hold
+
+        swapBiggest(arr, n, biggest)
+
+def heapSort(arr):
+    n = len(arr)
+    for i in range(n//2 - 1, -1, -1):
+        swapBiggest(arr,n, i)
+    for i in range(n-1, 0, -1):
+        hold = arr[i]
+        arr[i] = arr[0]
+        arr[0] = hold
+
+        swapBiggest(arr, i, 0)
+
+
 arr = [12, 11, 13, 5, 7, 6]
 print(arr)
-mergeSort(arr)
+heapSort(arr)
 print(arr)
