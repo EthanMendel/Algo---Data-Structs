@@ -1,3 +1,5 @@
+import random
+
 def insertionSort(arr):
     for i in range(1,len(arr)):
         cur = arr[i]
@@ -66,8 +68,35 @@ def heapSort(arr):
 
         swapBiggest(arr, i, 0)
 
+def partition(arr, s, e, ix):
+    arr[s], arr[ix] = arr[ix], arr[s]
+    p = arr[s]
+    i = s + 1
+    j = s + 1
+    while j <= e:
+        if arr[j] <= p:
+            hold = arr[i]
+            arr[i] = arr[j]
+            arr[j] = hold
+            i += 1
+        j += 1
+    hold = arr[s]
+    arr[s] = arr[i - 1]
+    arr[i - 1] = hold
+    return i - 1
+
+def quickSort(arr, s=0, e=None):
+    if e is None:
+        e = len(arr) - 1
+    if e - s < 1:
+        return
+    ix = random.randint(s, e)
+    i = partition(arr, s, e, ix)
+
+    quickSort(arr, s, i - 1)
+    quickSort(arr, i + 1, e)
 
 arr = [12, 11, 13, 5, 7, 6]
 print(arr)
-heapSort(arr)
+quickSort(arr, 0, len(arr) - 1)
 print(arr)
