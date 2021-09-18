@@ -96,7 +96,45 @@ def quickSort(arr, s=0, e=None):
     quickSort(arr, s, i - 1)
     quickSort(arr, i + 1, e)
 
+def med3Partition(arr,s,e):
+    res = 0
+    p = idx = None
+    m = (s+e-1)//2
+    if (arr[s] <= arr[m] <= arr[e]) or (arr[e] <= arr[m] <= arr[s]):
+        p = arr[m]
+        idx = m
+    elif (arr[s] <= arr[e] <= arr[m]) or (arr[m] <= arr[e] <= arr[s]):
+        p = arr[e]
+        idx = e
+    else:
+        p = arr[s]
+        idx = s
+    arr[s],arr[idx] = arr[idx],arr[s]
+    i = s + 1
+    j = s + 1
+    while j <= e:
+        if arr[j] <= p:
+            hold = arr[i]
+            arr[i] = arr[j]
+            arr[j] = hold
+            i += 1
+        j += 1
+    hold = arr[s]
+    arr[s] = arr[i - 1]
+    arr[i - 1] = hold
+    return i - 1
+
+def med3QuickSort(arr, s=0, e=None):
+    if e is None:
+        e = len(arr) - 1
+    if e - s < 1:
+        return
+    i = med3Partition(arr, s, e)
+
+    med3QuickSort(arr, s, i - 1)
+    med3QuickSort(arr, i + 1, e)
+
 arr = [12, 11, 13, 5, 7, 6]
 print(arr)
-quickSort(arr, 0, len(arr) - 1)
+med3QuickSort(arr, 0, len(arr) - 1)
 print(arr)
