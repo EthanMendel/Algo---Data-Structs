@@ -155,27 +155,43 @@ def isSorted(arr):
 n = [1000, 2000, 3000, 5000, 10000, 20000, 30000, 40000, 50000, 60000]
 times = np.zeros((5,len(n),10))
 for i in range(len(n)): #for each array size
+    print("running for %s" % n[i])
     for j in range(10): #for each trial
         arr = np.random.rand(n[i]).tolist()#make array to use for all tests
         for k in range(5):
             start = end = None
             if(k==0):#insertion
+                if(j==0):
+                    print("\trunning insersion sort")
+                unSorted = arr[:]
                 start = datetime.now().microsecond
-                insertionSort(arr)
+                insertionSort(unSorted)
                 end = datetime.now().microsecond
             elif(k==1):#merge
+                if(j==0):
+                    print("\trunning merge sort")
+                unSorted = arr[:]
                 start = datetime.now().microsecond
-                mergeSort(arr)
+                mergeSort(unSorted)
                 end = datetime.now().microsecond
             elif(k==2):#heap
+                if(j==0):
+                    print("\trunning heap sort")
+                unSorted = arr[:]
                 start = datetime.now().microsecond
-                heapSort(arr)
+                heapSort(unSorted)
                 end = datetime.now().microsecond
             elif(k==3):#quick
+                if(j==0):
+                    print("\trunning quick sort")
+                unSorted = arr[:]
                 start = datetime.now().microsecond
-                quickSort(arr)
+                quickSort(unSorted)
                 end = datetime.now().microsecond
             else:#med 3 quick
+                if(j==0):
+                    print("\trunning med 3 quick sort")
+                unSorted = arr[:]
                 start = datetime.now().microsecond
                 med3QuickSort(arr)
                 end = datetime.now().microsecond
@@ -183,10 +199,7 @@ for i in range(len(n)): #for each array size
             # print(elapsed)
             times[k,i,j] = elapsed
 print(times)
+savetxt('times.csv', times, delimiter=',')
 avgs = np.average(times,2)
 print(avgs)
-            
-            
-
-    
-    
+savetxt('averages.csv', avgs, delimiter=',')
