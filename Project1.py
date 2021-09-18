@@ -1,4 +1,5 @@
 import random
+from datetime import datetime
 
 def insertionSort(arr):
     for i in range(1,len(arr)):
@@ -134,7 +135,18 @@ def med3QuickSort(arr, s=0, e=None):
     med3QuickSort(arr, s, i - 1)
     med3QuickSort(arr, i + 1, e)
 
+def isSorted(arr):
+    for i in range(len(arr)):
+        if i != 0:
+            if arr[i-1] > arr[i]:
+                return False
+    return True
+
 arr = [12, 11, 13, 5, 7, 6]
 print(arr)
+start = datetime.now()
 med3QuickSort(arr, 0, len(arr) - 1)
+end = datetime.now()
 print(arr)
+print(isSorted(arr))
+print(end - start)
