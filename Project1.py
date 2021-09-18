@@ -1,4 +1,5 @@
 import random
+import numpy as np
 from datetime import datetime
 
 def insertionSort(arr):
@@ -142,11 +143,50 @@ def isSorted(arr):
                 return False
     return True
 
-arr = [12, 11, 13, 5, 7, 6]
-print(arr)
-start = datetime.now()
-med3QuickSort(arr, 0, len(arr) - 1)
-end = datetime.now()
-print(arr)
-print(isSorted(arr))
-print(end - start)
+# arr = [12, 11, 13, 5, 7, 6]
+# print(arr)
+# start = datetime.now()
+# med3QuickSort(arr, 0, len(arr) - 1)
+# end = datetime.now()
+# print(arr)
+# print(isSorted(arr))
+# print(end - start)
+# n = [10,20,30]
+n = [1000, 2000, 3000, 5000, 10000, 20000, 30000, 40000, 50000, 60000]
+times = np.zeros((5,len(n),10))
+for i in range(len(n)): #for each array size
+    for j in range(10): #for each trial
+        arr = np.random.rand(n[i]).tolist()#make array to use for all tests
+        for k in range(5):
+            start = end = None
+            if(k==0):#insertion
+                start = datetime.now().microsecond
+                insertionSort(arr)
+                end = datetime.now().microsecond
+            elif(k==1):#merge
+                start = datetime.now().microsecond
+                mergeSort(arr)
+                end = datetime.now().microsecond
+            elif(k==2):#heap
+                start = datetime.now().microsecond
+                heapSort(arr)
+                end = datetime.now().microsecond
+            elif(k==3):#quick
+                start = datetime.now().microsecond
+                quickSort(arr)
+                end = datetime.now().microsecond
+            else:#med 3 quick
+                start = datetime.now().microsecond
+                med3QuickSort(arr)
+                end = datetime.now().microsecond
+            elapsed = end - start
+            # print(elapsed)
+            times[k,i,j] = elapsed
+print(times)
+avgs = np.average(times,2)
+print(avgs)
+            
+            
+
+    
+    
