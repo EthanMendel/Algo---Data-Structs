@@ -158,6 +158,7 @@ for i in range(len(n)): #for each array size
     print("running for %s" % n[i])
     for j in range(10): #for each trial
         arr = np.random.rand(n[i]).tolist()#make array to use for all tests
+        # arr.reverse()
         for k in range(5):
             start = end = None
             if(k==0):#insertion
@@ -198,8 +199,7 @@ for i in range(len(n)): #for each array size
             elapsed = end - start
             # print(elapsed)
             times[k,i,j] = elapsed
-print(times)
-savetxt('times.csv', times, delimiter=',')
+# print(times)
 avgs = np.average(times,2)
-print(avgs)
-savetxt('averages.csv', avgs, delimiter=',')
+# print(avgs)
+np.savetxt('reverseSortedAverages.csv', avgs, delimiter=',')
