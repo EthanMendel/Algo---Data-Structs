@@ -1,26 +1,32 @@
 from numpy.lib.npyio import load
-import pandas as pd
+import numpy as np
+
+def getKey(keys, k):
+    if(not (k in keys)):
+        keys.append(k)
+    return keys.index(k)
 
 def loadGraph(fileName="sample.txt"):
-    cols = ["from","to","cost"]
-    graph = pd.DataFrame(columns=cols)
     fileTxt = open(fileName, "r").read()
     lines = fileTxt.splitlines()
-    l = lines[0]
-    h = l.split(" ")
-    undirected = h[2] == "U" or h[2] == "u"
+    l = lines[0].split(" ")
+    n = int(l[0])
+    graph = np.zeros((n,n))
+    keys = []
+    undirected = l[2] == "U" or l[2] == "u"
     lines.remove(lines[0])
     startingNode = None
     for l in lines:
         h = l.split(" ")
         if(len(h) == 3):
-            graph = graph.append({"from":h[0],"to":h[1],"cost":h[2]},ignore_index=True)
-            if(undirected):
-                graph = graph.append({"from":h[1],"to":h[0],"cost":h[2]},ignore_index=True)
+            i1 = getKey(keys,h[0])
+            i2 = getKey(keys,h[1])
+            graph[i1,i2] = h[2]
         else:
             startingNode = h[0]
-    # print(graph)
-    # print(f"Starting Node: {startingNode}")
-    return (graph,startingNode)
+    return (graph, keys, startingNode)
 
-(graph, startingNode) = loadGraph()
+
+(graph,keys, startingNode) = loadGraph()
+print(keys)
+print(graph)
