@@ -22,6 +22,8 @@ def loadGraph(fileName="sample.txt"):
             i1 = getKey(keys,h[0])
             i2 = getKey(keys,h[1])
             graph[i1,i2] = h[2]
+            if(undirected):
+                graph[i2,i1] = h[2]
         else:
             startingNode = h[0]
     return (graph, keys, startingNode)
