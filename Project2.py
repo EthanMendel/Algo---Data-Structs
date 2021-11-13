@@ -22,11 +22,11 @@ class Node:
     def __lt__(self,o):
         return self.d < o.d
 
-
 def getIndex(keys, k):
     if(not (k in keys)):
         keys.append(k)
     return keys.index(k)
+
 def getKey(keys,i):
     if(i<len(keys)):
         return keys[i]
@@ -79,7 +79,34 @@ def dijkstras(graph,keys,source):
                 heapq.heapify(Q)
     return S
 
+def prim(graph,keys,source):
+    #initialize-single-source
+    Q = []
+    for k in keys:
+        i = getIndex(keys,k)
+        if(k == source):
+            heapq.heappush(Q,Node(i,k,True))
+        else:
+            heapq.heappush(Q,Node(i,k))
+    S = []
+    while(len(Q) > 0):
+        u = heapq.heappop(Q)
+        S.append(u)
+        for v in Q:
+            if(graph[u.index,v.index] > 0):
+                if(graph[u.index,v.index] < v.d):
+                    v.d = graph[u.index,v.index]
+                    v.p = u
+                    heapq.heapify(Q)
+    return S
+
+
 (graph,keys, startingNode) = loadGraph()
 sssp = dijkstras(graph,keys,startingNode)
+print("Single-Source Shortest Paths (showing total costs at each node)")
 for s in sssp:
+    print(s)
+print("Minimum Spanning Tree (showing edge cost from previous node)")
+mst = prim(graph,keys,startingNode)
+for s in mst:
     print(s)
