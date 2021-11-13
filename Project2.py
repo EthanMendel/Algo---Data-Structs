@@ -5,15 +5,16 @@ import math
 import heapq
 
 class Node:
-    def __init__(self,i,source=False):
+    def __init__(self,i,n,source=False):
         self.index = i
+        self.name = n
         if(source):
             self.d = 0
         else:
             self.d = math.inf
         self.p = None
     def __str__(self):
-        return f"{self.index} costs {self.d} from parent {self.p}"
+        return f"{self.name} costs {self.d} from {self.p}"
     def __eq__(self, o):
         return self.d == o.d and self.index == o.index
     def __gt__(self,o):
@@ -54,8 +55,10 @@ def loadGraph(fileName="sample.txt"):
             startingNode = h[0]
     return (graph, keys, startingNode)
 
-def relax(graph):
-    pass
+def relax(graph,u,v):
+    if(v.d > u.d + graph[u.index,v.index]):
+        v.d = u.d + graph[u.index,v.index]
+        v.p = u
 
 def dijkstras(graph,keys,source):
     #initialize-single-source
@@ -63,17 +66,20 @@ def dijkstras(graph,keys,source):
     for k in keys:
         i = getIndex(keys,k)
         if(k == source):
-            heapq.heappush(Q,Node(i,True))
+            heapq.heappush(Q,Node(i,k,True))
         else:
-            heapq.heappush(Q,Node(i))
+            heapq.heappush(Q,Node(i,k))
     S = []
     while(len(Q) > 0):
         u = heapq.heappop(Q)
         S.append(u)
-        for k in keys:
-            v = getIndex(keys,k)
-            if(graph[u.index,v] > 0):
-                relax(graph,u.index,v)
+        for v in Q:
+            if(graph[u.index,v.index] > 0):
+                relax(graph,u,v)
+                heapq.heapify(Q)
+    return S
 
 (graph,keys, startingNode) = loadGraph()
-dijkstras(graph,keys,startingNode)
+sssp = dijkstras(graph,keys,startingNode)
+for s in sssp:
+    print(s)
