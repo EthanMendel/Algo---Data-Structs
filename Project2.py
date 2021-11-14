@@ -1,3 +1,4 @@
+from numpy.core.fromnumeric import transpose
 from numpy.core.numeric import Inf
 from numpy.lib.npyio import load
 import numpy as np
@@ -33,7 +34,7 @@ def getKey(keys,i):
     else:
         return None
 
-def loadGraph(fileName="sample.txt"):
+def loadGraph(fileName="sample2.txt"):
     fileTxt = open(fileName, "r").read()
     lines = fileTxt.splitlines()
     l = lines[0].split(" ")
@@ -53,6 +54,8 @@ def loadGraph(fileName="sample.txt"):
                 graph[i2,i1] = h[2]
         else:
             startingNode = h[0]
+    if(startingNode == None):
+        startingNode = keys[0]
     return (graph, keys, startingNode)
 
 def relax(graph,u,v):
@@ -100,6 +103,37 @@ def prim(graph,keys,source):
                     heapq.heapify(Q)
     return S
 
+def fill_order(graph,d, visited, stack):
+    visited[d] = True
+    for i in range(len(graph[d])):
+        if(graph[d,i]>0 and not visited[i]):
+            fill_order(graph,i,visited,stack)
+    stack = stack.append(d)
+
+def dfs(graph,d,visited):
+    visited[d] = True
+    print(d,end='')
+    for i in range(len(graph[d])):
+        if not visited[i]:
+            dfs(graph,i,visited)
+
+def stronglyConnected(graph):
+    stack = []
+    visited_vertex = [False] * len(graph)
+
+    for i in range(len(graph)):
+        if(not visited_vertex[i]):
+            fill_order(graph,i,visited_vertex,stack)
+
+    gr = transpose(graph)
+
+    visited_vertex = [False] * len(graph)
+
+    while stack:
+        i = stack.pop()
+        if(not visited_vertex[i]):
+            dfs(gr,i,visited_vertex)
+            print("")
 
 (graph,keys, startingNode) = loadGraph()
 sssp = dijkstras(graph,keys,startingNode)
@@ -110,3 +144,4 @@ print("Minimum Spanning Tree (showing edge cost from previous node)")
 mst = prim(graph,keys,startingNode)
 for s in mst:
     print(s)
+stronglyConnected(graph)
