@@ -5,6 +5,10 @@ import numpy as np
 import math
 import heapq
 
+WHITE = "white"
+GRAY = "gray"
+BLACK = "black"
+
 class Node:
     def __init__(self,i,n,source=False):
         self.index = i
@@ -22,6 +26,26 @@ class Node:
         return self.d > o.d
     def __lt__(self,o):
         return self.d < o.d
+
+class NodeDFS:
+    def __init__(self,i,n):
+        self.index = i
+        self.name = n
+        self.p = None
+        self.color = WHITE
+    def started(self,s):
+        self.s = s
+    def finished(self,f):
+        self.f = f
+    def __str__(self):
+        return f"{self.name} from {self.p}"
+    def __eq__(self, o):
+        return self.index == o.index
+    def __gt__(self,o):
+        return self.f > o.f
+    def __lt__(self,o):
+        return self.f < o.f
+
 
 def getIndex(keys, k):
     if(not (k in keys)):
@@ -103,36 +127,42 @@ def prim(graph,keys,source):
                     heapq.heapify(Q)
     return S
 
-def fill_order(graph,d, visited, stack):
-    visited[d] = True
-    for i in range(len(graph[d])):
-        if(graph[d,i]>0 and not visited[i]):
-            fill_order(graph,i,visited,stack)
-    stack = stack.append(d)
+def dfsVisit(graph,G,u,time,printSCC=False):
+    time += 1
+    u.started(time)
+    u.color = GRAY
+    if(printSCC):
+        print(u.name,end='')
+    for v in G:
+        if(graph[u.index,v.index] > 0 and v.color == WHITE):
+            v.p = u
+            time = dfsVisit(graph,G,v,time,printSCC)
+    u.color = BLACK
+    time +=1
+    u.finished(time)
+    return time
 
-def dfs(graph,d,visited):
-    visited[d] = True
-    print(d,end='')
-    for i in range(len(graph[d])):
-        if not visited[i]:
-            dfs(graph,i,visited)
 
-def stronglyConnected(graph):
-    stack = []
-    visited_vertex = [False] * len(graph)
-
-    for i in range(len(graph)):
-        if(not visited_vertex[i]):
-            fill_order(graph,i,visited_vertex,stack)
-
-    gr = transpose(graph)
-
-    visited_vertex = [False] * len(graph)
-
-    while stack:
-        i = stack.pop()
-        if(not visited_vertex[i]):
-            dfs(gr,i,visited_vertex)
+def stronglyConnected(graph,keys):
+    G = []
+    for k in keys:
+        i = getIndex(keys,k)
+        G.append(NodeDFS(i,k))
+    time = 0
+    for u in G:
+        if(u.color == WHITE):
+            dfsVisit(graph,G,u,time)
+    Gp = np.sort(G).tolist()
+    Gp.reverse()
+    graphP = transpose(graph)
+    for u in Gp:
+        u.color = WHITE
+        u.s = -1
+        u.f = -1
+    time = 0
+    for u in Gp:
+        if(u.color == WHITE):
+            dfsVisit(graphP,Gp,u,time,True)
             print("")
 
 (graph,keys, startingNode) = loadGraph()
@@ -144,4 +174,4 @@ print("Minimum Spanning Tree (showing edge cost from previous node)")
 mst = prim(graph,keys,startingNode)
 for s in mst:
     print(s)
-stronglyConnected(graph)
+stronglyConnected(graph,keys)
