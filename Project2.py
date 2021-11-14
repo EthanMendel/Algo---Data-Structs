@@ -1,6 +1,4 @@
 from numpy.core.fromnumeric import transpose
-from numpy.core.numeric import Inf
-from numpy.lib.npyio import load
 import numpy as np
 import math
 import heapq
@@ -144,6 +142,7 @@ def dfsVisit(graph,G,u,time,printSCC=False):
 
 
 def stronglyConnected(graph,keys):
+    print(" | ",end='')
     G = []
     for k in keys:
         i = getIndex(keys,k)
@@ -163,7 +162,7 @@ def stronglyConnected(graph,keys):
     for u in Gp:
         if(u.color == WHITE):
             dfsVisit(graphP,Gp,u,time,True)
-            print("")
+            print(" | ",end='')
 
 (graph,keys, startingNode) = loadGraph()
 sssp = dijkstras(graph,keys,startingNode)
@@ -174,4 +173,5 @@ print("Minimum Spanning Tree (showing edge cost from previous node)")
 mst = prim(graph,keys,startingNode)
 for s in mst:
     print(s)
+print("Strongly Connected Components")
 stronglyConnected(graph,keys)
